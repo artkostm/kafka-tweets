@@ -11,14 +11,11 @@ import org.apache.kafka.common.serialization.ByteArraySerializer
 import pureconfig.generic.auto._
 
 object Main extends App {
-  implicit val system = ActorSystem("tweet_publisher")
-  implicit val producerSettings = ProducerSettings[PKey, PVal](
-    system,
-    new ByteArraySerializer,
-    new ByteArraySerializer
-  )
+  implicit val system              = ActorSystem("tweet_publisher")
   implicit val mat                 = ActorMaterializer()
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
+  implicit val producerSettings =
+    ProducerSettings[PKey, PVal](system, new ByteArraySerializer, new ByteArraySerializer)
 
   val config = pureconfig.loadConfig[AppConfig]
   val client = TwitterStreamingClient()
