@@ -1,0 +1,5 @@
+lazy val root = (project in file("."))
+  .configs(IntegrationTest)
+  .settings(Defaults.itSettings)
+  .settings(Settings.default)
+  .settings(libraryDependencies ++= Dependencies.main)
