@@ -6,7 +6,7 @@ import akka.stream.{ActorMaterializer, OverflowStrategy}
 import akka.stream.scaladsl.{Flow, Source}
 import by.artsiom.bigdata201.tweet.config.TweetsConfig
 import com.danielasfregola.twitter4s.{StreamingClients, TwitterStreamingClient}
-import com.danielasfregola.twitter4s.entities.Tweet
+import com.danielasfregola.twitter4s.entities.{ExtendedTweet, Tweet}
 import com.danielasfregola.twitter4s.entities.enums.Language
 import com.github.plokhotnyuk.jsoniter_scala.core.{JsonValueCodec, writeToArray}
 
