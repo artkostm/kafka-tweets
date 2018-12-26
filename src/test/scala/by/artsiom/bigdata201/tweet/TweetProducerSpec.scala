@@ -20,9 +20,12 @@ import org.scalatest.{BeforeAndAfterAll, FlatSpecLike}
 import scala.concurrent.duration._
 import scala.concurrent.Future
 
-class TweetProducerSpec extends TestKit(
-  ActorSystem("tweet_producer_test")) with ImplicitSender
-  with FlatSpecLike with MockFactory with BeforeAndAfterAll {
+class TweetProducerSpec
+    extends TestKit(ActorSystem("tweet_producer_test"))
+    with ImplicitSender
+    with FlatSpecLike
+    with MockFactory
+    with BeforeAndAfterAll {
   import TweetProducerSpec._
 
   implicit val mat = ActorMaterializer(ActorMaterializerSettings(system).withSupervisionStrategy({
@@ -33,7 +36,7 @@ class TweetProducerSpec extends TestKit(
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
 
   val config = TweetsConfig(Topic, Tracks, Location, BufSize)
-  val tweet = TweetGenerator.rendomTweet(HashTag)
+  val tweet  = TweetGenerator.rendomTweet(HashTag)
 
   "TweetProducer" should "publish one kafka message with correct key" in {
     val client = createClientMock(tweet)
@@ -48,7 +51,7 @@ class TweetProducerSpec extends TestKit(
     actor ! tweet
     val message = probe.expectMsgPF(3 seconds) {
       case m: PMessage => m
-      case _ => fail("wrong message type")
+      case _           => fail("wrong message type")
     }
     assert(new String(message.key()).contains(HashTag))
 
@@ -68,16 +71,19 @@ class TweetProducerSpec extends TestKit(
       _: Seq[Double],
       _: Seq[Language],
       _: Boolean,
-      _: FilterLevel)(
-      _: PartialFunction[CommonStreamingMessage, Unit])) expects(*, *, *, *, *, *, *) onCall { (_: Seq[Long],
-                                                                                                _: Seq[String],
-                                                                                                _: Seq[Double],
-                                                                                                _: Seq[Language],
-                                                                                                _: Boolean,
-                                                                                                _: FilterLevel,
-                                                                                                fn: PartialFunction[CommonStreamingMessage, Unit]) =>
-      fn.apply(tweet)
-      Future.successful(TwitterStream(ConsumerToken("", ""), AccessToken("", ""))(null, null, system))
+      _: FilterLevel
+    )(_: PartialFunction[CommonStreamingMessage, Unit])) expects (*, *, *, *, *, *, *) onCall {
+      (_: Seq[Long],
+       _: Seq[String],
+       _: Seq[Double],
+       _: Seq[Language],
+       _: Boolean,
+       _: FilterLevel,
+       fn: PartialFunction[CommonStreamingMessage, Unit]) =>
+        fn.apply(tweet)
+        Future.successful(
+          TwitterStream(ConsumerToken("", ""), AccessToken("", ""))(null, null, system)
+        )
     }
 
     client
@@ -86,9 +92,9 @@ class TweetProducerSpec extends TestKit(
 
 object TweetProducerSpec {
   val Parallelism = 10
-  val Topic = "test"
-  val Tracks = List("big", "data")
-  val Location = List(0.02, 0.03, 0.04, 0.05)
-  val BufSize = 0
-  val HashTag = "first"
+  val Topic       = "test"
+  val Tracks      = List("big", "data")
+  val Location    = List(0.02, 0.03, 0.04, 0.05)
+  val BufSize     = 0
+  val HashTag     = "first"
 }

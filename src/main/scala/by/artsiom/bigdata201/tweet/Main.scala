@@ -21,8 +21,10 @@ object Main extends App {
   val config = pureconfig.loadConfig[AppConfig]
   val client = TwitterStreamingClient()
 
-
-  config.map(appConfig => TweetProducer(client).publish(appConfig.tweets, Producer.plainSink(producerSettings)))
+  config.map(
+    appConfig =>
+      TweetProducer(client).publish(appConfig.tweets, Producer.plainSink(producerSettings))
+  )
 
   val ip = "128.42.5.4"
 

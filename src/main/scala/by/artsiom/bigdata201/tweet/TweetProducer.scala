@@ -6,13 +6,12 @@ import by.artsiom.bigdata201.tweet.config.TweetsConfig
 import com.danielasfregola.twitter4s.StreamingClients
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.entities.enums.Language
-import com.github.plokhotnyuk.jsoniter_scala.core.{JsonValueCodec, writeToArray}
+import com.github.plokhotnyuk.jsoniter_scala.core.{writeToArray, JsonValueCodec}
 
 trait TweetProducer {
   protected val twitterClient: StreamingClients
 
-  def publish(config: TweetsConfig,
-              kafkaProducerSink: Graph[SinkShape[PMessage], _])(
+  def publish(config: TweetsConfig, kafkaProducerSink: Graph[SinkShape[PMessage], _])(
     implicit mat: ActorMaterializer,
     tweetValueCodec: JsonValueCodec[Tweet]
   ) = {

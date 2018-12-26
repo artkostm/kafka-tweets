@@ -12,14 +12,14 @@ class DateJsonValueCodecSpec extends FlatSpec {
   implicit val testClsCodec = JsonCodecMaker.make[TestCls](CodecMakerConfig())
 
   "Codec" should "convert date to valid json Numeric (timestamp)" in {
-    val date = new Date()
+    val date       = new Date()
     val actualJson = new String(writeToArray(TestCls(date)))
     assert(s"""{"date":${date.getTime}}""" == actualJson)
   }
 
   "Codec" should "convert json to correct date" in {
-    val date = new Date()
-    val json = s"""{"date":${date.getTime}}"""
+    val date                   = new Date()
+    val json                   = s"""{"date":${date.getTime}}"""
     val actualTestCls: TestCls = readFromArray(json.getBytes)(testClsCodec)
     assert(date.getTime == actualTestCls.date.getTime)
   }
