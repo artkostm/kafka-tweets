@@ -1,3 +1,5 @@
-package by.artsiom.bigdata201.tweet class TweetProducerIntegTest {
+package by.artsiom.bigdata201.tweet
+
+class TweetProducerIntegTest {
 
 }
