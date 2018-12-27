@@ -48,7 +48,8 @@ trait TweetProducer {
     twitterClient.filterStatuses(
       tracks = Seq(config.tracks.mkString(",")),
       locations = config.locations,
-      languages = Seq(Language.English, Language.Russian)
+      languages = Seq(Language.English, Language.Russian),
+      stall_warnings = true
     )(TweetProducer.processMessages(mat.system, streamRef))
 
     streamRef
@@ -57,9 +58,9 @@ trait TweetProducer {
 
 object TweetProducer {
 
-  def apply(client: StreamingClients, c: TweetsConfig): TweetProducer = new TweetProducer {
+  def apply(client: StreamingClients, tc: TweetsConfig): TweetProducer = new TweetProducer {
     override protected val twitterClient: StreamingClients = client
-    override protected val config: TweetsConfig = c
+    override protected val config: TweetsConfig = tc
   }
 
   protected def processMessages(
