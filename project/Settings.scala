@@ -4,10 +4,9 @@ import sbtassembly._
 import AssemblyKeys._
 
 object Settings {
-  lazy val default = Seq(
-    name := "kafka-tweets",
+  def default(sv: String) = Seq(
     version := "0.1",
-    scalaVersion := "2.12.8",
+    scalaVersion := sv,
     assemblyMergeStrategy in assembly := {
       case PathList("META-INF", _ @_*) => MergeStrategy.discard
       case _                           => MergeStrategy.first
