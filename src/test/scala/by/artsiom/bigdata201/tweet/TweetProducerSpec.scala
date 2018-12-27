@@ -48,7 +48,6 @@ class TweetProducerSpec
     val probe = TestProbe()
     val actor = tweetProducer.publish(config, Sink.actorRef(probe.ref, "completed"))
 
-    actor ! tweet
     val message = probe.expectMsgPF(3 seconds) {
       case m: PMessage => m
       case _           => fail("wrong message type")
@@ -80,7 +79,7 @@ class TweetProducerSpec
        _: Boolean,
        _: FilterLevel,
        fn: PartialFunction[CommonStreamingMessage, Unit]) =>
-        fn.apply(tweet)
+        fn(tweet)
         Future.successful(
           TwitterStream(ConsumerToken("", ""), AccessToken("", ""))(null, null, system)
         )
@@ -95,6 +94,6 @@ object TweetProducerSpec {
   val Topic       = "test"
   val Tracks      = List("big", "data")
   val Location    = List(0.02, 0.03, 0.04, 0.05)
-  val BufSize     = 0
+  val BufSize     = 10
   val HashTag     = "first"
 }
