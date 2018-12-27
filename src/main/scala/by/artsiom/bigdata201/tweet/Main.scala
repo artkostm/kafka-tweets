@@ -19,10 +19,10 @@ object Main extends App {
   implicit val system              = ActorSystem("tweet_publisher")
   implicit val mat                 = ActorMaterializer()
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
-  implicit val producerSettings =
-    ProducerSettings[PKey, PVal](system, new ByteArraySerializer, new ByteArraySerializer)
 
   val client = TwitterStreamingClient()
+  val producerSettings =
+    ProducerSettings[PKey, PVal](system, new ByteArraySerializer, new ByteArraySerializer)
 
   loadConfig[AppConfig].map(
     appConfig =>
