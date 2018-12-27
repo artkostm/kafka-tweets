@@ -19,8 +19,9 @@ import com.github.plokhotnyuk.jsoniter_scala.core.{writeToArray, JsonValueCodec}
 
 trait TweetProducer {
   protected val twitterClient: StreamingClients
+  protected val config: TweetsConfig
 
-  def publish(config: TweetsConfig, kafkaProducerSink: Graph[SinkShape[PMessage], _])(
+  def publishTo(kafkaProducerSink: Graph[SinkShape[PMessage], _])(
     implicit mat: ActorMaterializer,
     tweetValueCodec: JsonValueCodec[Tweet]
   ) = {
@@ -56,8 +57,9 @@ trait TweetProducer {
 
 object TweetProducer {
 
-  def apply(client: StreamingClients): TweetProducer = new TweetProducer {
+  def apply(client: StreamingClients, c: TweetsConfig): TweetProducer = new TweetProducer {
     override protected val twitterClient: StreamingClients = client
+    override protected val config: TweetsConfig = c
   }
 
   protected def processMessages(
