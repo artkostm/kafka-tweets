@@ -9,8 +9,13 @@ import com.danielasfregola.twitter4s.StreamingClients
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.entities.enums.{FilterLevel, Language}
 import com.danielasfregola.twitter4s.entities.streaming.CommonStreamingMessage
-import com.danielasfregola.twitter4s.entities.streaming.common.{DisconnectMessage, LimitNotice, LimitTrack, WarningMessage}
-import com.github.plokhotnyuk.jsoniter_scala.core.{JsonValueCodec, writeToArray}
+import com.danielasfregola.twitter4s.entities.streaming.common.{
+  DisconnectMessage,
+  LimitNotice,
+  LimitTrack,
+  WarningMessage
+}
+import com.github.plokhotnyuk.jsoniter_scala.core.{writeToArray, JsonValueCodec}
 
 trait TweetProducer {
   protected val twitterClient: StreamingClients
@@ -56,7 +61,7 @@ object TweetProducer {
 
   def apply(client: StreamingClients, tc: TweetsConfig): TweetProducer = new TweetProducer {
     override protected val twitterClient: StreamingClients = client
-    override protected val config: TweetsConfig = tc
+    override protected val config: TweetsConfig            = tc
   }
 
   protected def processMessages(

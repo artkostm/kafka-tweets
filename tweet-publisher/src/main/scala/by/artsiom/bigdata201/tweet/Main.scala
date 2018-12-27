@@ -21,6 +21,7 @@ object Main extends App {
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
 
   val client = TwitterStreamingClient()
+
   val producerSettings =
     ProducerSettings[PKey, PVal](system, new ByteArraySerializer, new ByteArraySerializer)
 

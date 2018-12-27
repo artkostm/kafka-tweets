@@ -9,13 +9,13 @@ object Dependencies {
     val twitter4s  = "5.5"
     val akka       = "2.5.13"
     val logback    = "1.2.3"
-    val spark = "2.3.0"
+    val spark      = "2.3.0"
 
     val scalaTest           = "3.0.5"
     val scalaCheck          = "1.14.0"
     val scalaMock           = "4.1.0"
     val randomDataGenerator = "2.6"
-    val alpakka_testkit = "1.0-RC1"
+    val alpakka_testkit     = "1.0-RC1"
   }
 
   lazy val mainP = Seq(
@@ -29,11 +29,11 @@ object Dependencies {
   )
 
   lazy val mainJ = Seq(
-    "org.apache.spark" %% "spark-streaming" % versions.spark % Provided,
-    "org.apache.spark" %% "spark-streaming-kafka-0-10" % versions.spark,
-    "org.apache.spark" %% "spark-sql-kafka-0-10" % versions.spark,
-    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % versions.jsoniter % Compile,
-    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % versions.jsoniter % Provided
+    "org.apache.spark"                      %% "spark-streaming"            % versions.spark % Provided,
+    "org.apache.spark"                      %% "spark-streaming-kafka-0-10" % versions.spark,
+    "org.apache.spark"                      %% "spark-sql-kafka-0-10"       % versions.spark,
+    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"        % versions.jsoniter % Compile,
+    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros"      % versions.jsoniter % Provided
   )
 
   lazy val testCommon = Seq(
@@ -53,8 +53,8 @@ object Dependencies {
   )).map(_ % IntegrationTest)
 
   lazy val unitTestsJ = (testCommon ++ Seq(
-  )).map(_ % Test)
+    )).map(_ % Test)
 
   lazy val itTestsJ = (testCommon ++ Seq(
-  )).map(_ % IntegrationTest)
+    )).map(_ % IntegrationTest)
 }
