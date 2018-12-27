@@ -8,6 +8,7 @@ object Dependencies {
     val pureconfig = "0.10.1"
     val twitter4s  = "5.5"
     val akka       = "2.5.13"
+    val logback    = "1.2.3"
 
     val scalaTest           = "3.0.5"
     val scalaCheck          = "1.14.0"
@@ -20,7 +21,9 @@ object Dependencies {
     "com.github.pureconfig"                 %% "pureconfig"            % versions.pureconfig,
     "com.typesafe.akka"                     %% "akka-stream-kafka"     % versions.alpakka,
     "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % versions.jsoniter % Compile,
-    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % versions.jsoniter % Provided
+    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % versions.jsoniter % Provided,
+    "com.typesafe.akka"                     %% "akka-slf4j"            % versions.akka,
+    "ch.qos.logback"                        % "logback-classic"        % versions.logback
   )
 
   lazy val testCommon = Seq(

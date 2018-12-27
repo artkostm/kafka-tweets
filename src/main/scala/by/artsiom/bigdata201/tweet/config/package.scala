@@ -5,5 +5,5 @@ package object config {
   case class TweetsConfig(topic: String,
                           tracks: Seq[String],
                           locations: Seq[Double],
-                          streamBufSuze: Int)
+                          streamBufSize: Int)
 }

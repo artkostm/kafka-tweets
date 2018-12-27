@@ -7,15 +7,10 @@ import akka.stream.scaladsl.{Flow, Source}
 import by.artsiom.bigdata201.tweet.config.TweetsConfig
 import com.danielasfregola.twitter4s.StreamingClients
 import com.danielasfregola.twitter4s.entities.Tweet
-import com.danielasfregola.twitter4s.entities.enums.Language
+import com.danielasfregola.twitter4s.entities.enums.{FilterLevel, Language}
 import com.danielasfregola.twitter4s.entities.streaming.CommonStreamingMessage
-import com.danielasfregola.twitter4s.entities.streaming.common.{
-  DisconnectMessage,
-  LimitNotice,
-  LimitTrack,
-  WarningMessage
-}
-import com.github.plokhotnyuk.jsoniter_scala.core.{writeToArray, JsonValueCodec}
+import com.danielasfregola.twitter4s.entities.streaming.common.{DisconnectMessage, LimitNotice, LimitTrack, WarningMessage}
+import com.github.plokhotnyuk.jsoniter_scala.core.{JsonValueCodec, writeToArray}
 
 trait TweetProducer {
   protected val twitterClient: StreamingClients
@@ -26,7 +21,7 @@ trait TweetProducer {
     tweetValueCodec: JsonValueCodec[Tweet]
   ) = {
     val streamRef = Source
-      .actorRef[Tweet](config.streamBufSuze, OverflowStrategy.dropHead)
+      .actorRef[Tweet](config.streamBufSize, OverflowStrategy.dropHead)
       .via(
         Flow[Tweet].flatMapConcat { tweet =>
           val hashtags = for {
@@ -49,7 +44,8 @@ trait TweetProducer {
       tracks = Seq(config.tracks.mkString(",")),
       locations = config.locations,
       languages = Seq(Language.English, Language.Russian),
-      stall_warnings = true
+      stall_warnings = true,
+      filter_level = FilterLevel.Medium
     )(TweetProducer.processMessages(mat.system, streamRef))
 
     streamRef
@@ -68,9 +64,6 @@ object TweetProducer {
     streamRef: ActorRef
   ): PartialFunction[CommonStreamingMessage, Unit] = {
     case t: Tweet =>
-      system.log.info(s"""
-                         |Got $t
-           """.stripMargin)
       streamRef ! t
     case DisconnectMessage(info) =>
       system.log.error(s"""
