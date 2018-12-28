@@ -21,6 +21,8 @@ trait TweetProducer {
   protected val twitterClient: StreamingClients
   protected val config: TweetsConfig
 
+  protected def hashTags(t: Tweet): Seq[String]
+
   def publishTo(kafkaProducerSink: Graph[SinkShape[PMessage], _])(
     implicit mat: ActorMaterializer,
     tweetValueCodec: JsonValueCodec[Tweet]
@@ -29,15 +31,11 @@ trait TweetProducer {
       .actorRef[Tweet](config.streamBufSize, OverflowStrategy.dropHead)
       .via(
         Flow[Tweet].flatMapConcat { tweet =>
-          val hashtags = for {
-            entities <- tweet.entities
-          } yield entities.hashtags
-
-          Source(hashtags.getOrElse(List.empty).toSet)
+          Source(hashTags(tweet).toSet)
             .map(
-              h =>
+              ht =>
                 new PMessage(config.topic,
-                             (s"${tweet.user.map(_.name).getOrElse()}:${h.text}").getBytes,
+                             (s"${tweet.user.map(_.name).getOrElse()}:$ht").getBytes,
                              writeToArray(tweet))
             )
         }
@@ -59,10 +57,11 @@ trait TweetProducer {
 
 object TweetProducer {
 
-  def apply(client: StreamingClients, tc: TweetsConfig): TweetProducer = new TweetProducer {
-    override protected val twitterClient: StreamingClients = client
-    override protected val config: TweetsConfig            = tc
-  }
+  def apply(client: StreamingClients, tc: TweetsConfig): TweetProducer =
+    new TweetProducer with HashTagExtractor {
+      override protected val twitterClient: StreamingClients = client
+      override protected val config: TweetsConfig            = tc
+    }
 
   protected def processMessages(
     system: ActorSystem,
