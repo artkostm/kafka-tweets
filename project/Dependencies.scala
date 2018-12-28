@@ -32,6 +32,8 @@ object Dependencies {
     "org.apache.spark"                      %% "spark-streaming"            % versions.spark % Provided,
     "org.apache.spark"                      %% "spark-streaming-kafka-0-10" % versions.spark,
     "org.apache.spark"                      %% "spark-sql-kafka-0-10"       % versions.spark,
+    "org.apache.spark"                      %% "spark-core"                 % versions.spark % Provided,
+    "org.apache.spark"                      %% "spark-sql"                  % versions.spark % Provided,
     "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"        % versions.jsoniter % Compile,
     "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros"      % versions.jsoniter % Provided
   )
