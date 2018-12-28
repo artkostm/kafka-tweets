@@ -41,7 +41,7 @@ class TweetProducerSpec
   "TweetProducer" should "publish one kafka message with correct key" in {
     val client = createClientMock(tweet)
 
-    val tweetProducer = new TweetProducer {
+    val tweetProducer = new TweetProducer with HashTagExtractor {
       override protected val twitterClient: StreamingClients = client
       override protected val config: TweetsConfig = configuration
     }
