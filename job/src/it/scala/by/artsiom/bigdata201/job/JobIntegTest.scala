@@ -23,11 +23,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.collection.JavaConverters._
 
-class JobIntegTest extends TestKit(ActorSystem("job_integ_test")) with FlatSpecLike with EmbeddedKafka {
+class JobIntegTest
+    extends TestKit(ActorSystem("job_integ_test"))
+    with FlatSpecLike
+    with EmbeddedKafka {
   import JobIntegTest._
 
-  implicit val mat             = ActorMaterializer()
-  implicit val kafkaSerializer = new ByteArraySerializer()
+  implicit val mat                 = ActorMaterializer()
+  implicit val kafkaSerializer     = new ByteArraySerializer()
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
 
   val kafkaConfig = EmbeddedKafkaConfig()
@@ -50,23 +53,29 @@ class JobIntegTest extends TestKit(ActorSystem("job_integ_test")) with FlatSpecL
     (topicDataDir, countsDir) =>
       withRunningKafkaOnFoundPort(kafkaConfig) { implicit kafkaConfigWithPorts =>
         val messagesPublished = Source(List(TweetGenerator.rendomTweet(Hashtag)))
-          .runWith(Sink.foreach(tweet =>
-            publishToKafka(
-              Topic,
-              (s"${tweet.user.map(_.name).getOrElse()}:$Hashtag").getBytes,
-              writeToArray(tweet))
-          ))
+          .runWith(
+            Sink.foreach(
+              tweet =>
+                publishToKafka(Topic,
+                               (s"${tweet.user.map(_.name).getOrElse()}:$Hashtag").getBytes,
+                               writeToArray(tweet))
+            )
+          )
 
         assert(Await.result(messagesPublished, 5 seconds) == Done)
 
-        val appconfig = AppConfig(KafkaConfig(bootstrapServers = s"localhost:${kafkaConfigWithPorts.kafkaPort}", topic = Topic, checkpointLocation = ""), OutputConfig(topicDataDir, countsDir))
+        val appconfig = AppConfig(KafkaConfig(bootstrapServers =
+                                                s"localhost:${kafkaConfigWithPorts.kafkaPort}",
+                                              topic = Topic,
+                                              checkpointLocation = ""),
+                                  OutputConfig(topicDataDir, countsDir))
 
         Main.runJob(
           appconfig,
           SparkSession.builder.appName("batching-integ-test").master("local").getOrCreate()
         )
 
-        val topicFiles = Files.list(new File(topicDataDir).toPath).iterator().asScala
+        val topicFiles  = Files.list(new File(topicDataDir).toPath).iterator().asScala
         val countsFiles = Files.list(new File(countsDir).toPath).iterator().asScala
 
         assert(topicFiles.exists(_.getFileName.toString == "_SUCCESS"))
@@ -76,7 +85,7 @@ class JobIntegTest extends TestKit(ActorSystem("job_integ_test")) with FlatSpecL
 }
 
 object JobIntegTest {
-  val Topic = "TestTopic"
+  val Topic               = "TestTopic"
   val TempDirectoryPrefix = "tmp-integ-tests-"
-  val Hashtag = "IntegTest"
+  val Hashtag             = "IntegTest"
 }
