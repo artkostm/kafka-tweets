@@ -64,7 +64,7 @@ java -jar \
 
 # Spark Job
 
-To run the spark job on HDP use this (job produces hashtags and their counts partitioned by date and hour):
+To run the spark job on HDP use this (the job produces hashtags and their counts partitioned by date and hour):
 ```bash
 spark-submit \
     --class by.artsiom.bigdata201.job.Main \
