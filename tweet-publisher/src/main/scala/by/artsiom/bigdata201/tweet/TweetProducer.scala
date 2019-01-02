@@ -45,7 +45,7 @@ trait TweetProducer {
 
     twitterClient.filterStatuses(
       tracks = config.tracks,
-      //locations = config.locations,
+      locations = config.locations,
       languages = Seq(Language.English, Language.Russian),
       stall_warnings = true,
       filter_level = FilterLevel.Medium

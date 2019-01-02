@@ -25,7 +25,8 @@ object Main extends App {
   val producerSettings =
     ProducerSettings[PKey, PVal](system, new ByteArraySerializer, new ByteArraySerializer)
 
-  loadConfig[AppConfig].map(
+  loadConfig[AppConfig].fold(
+    failure => sys.error(s"Please check your configuration: ${failure.toList.mkString(",")}"),
     appConfig =>
       TweetProducer(client, appConfig.tweets).publishTo(Producer.plainSink(producerSettings))
   )
