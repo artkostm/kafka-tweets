@@ -7290,3 +7290,13 @@ Here are some screenshots of Spark UI, DAG Stages and results in HDFS
 ![Job 1 Stage 1](./screenshots/Job1Stage1.png "Job 1 Stage 1")
 
 ![Job 2 Stages 2 and 3](./screenshots/Job2Stage2-3.png "Job 2 Stages 2 and 3")
+
+Kafka's Topic data:
+![Kafka's Topic data](./screenshots/topicData.png "Kafka's Topic data")
+
+Counts partitioned by date and hour:
+![Сounts](./screenshots/countsDate.png "Сounts")
+
+![Сounts](./screenshots/countsHour.png "Сounts")
+
+![Сounts](./screenshots/counts15.png "Сounts")
