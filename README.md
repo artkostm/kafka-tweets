@@ -41,7 +41,7 @@ twitter {
 
 Build the jar: ```sbt assembly```
 
-Run Tweets Producer:
+Run Tweets Producer (Kafka's key is a `username:hastag` pair and value is a Tweet in json format):
 ```bash
 java -jar \
     -Dakka.kafka.producer.kafka-clients.bootstrap.servers=192.168.99.100:9092 \
@@ -64,7 +64,7 @@ java -jar \
 
 # Spark Job
 
-To run the spark job on HDP use this:
+To run the spark job on HDP use this (job produces hashtags and their counts partitioned by date and hour):
 ```bash
 spark-submit \
     --class by.artsiom.bigdata201.job.Main \
