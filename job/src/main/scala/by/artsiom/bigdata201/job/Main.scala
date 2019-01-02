@@ -7,7 +7,6 @@ import org.apache.spark.sql.functions._
 import pureconfig.generic.auto._
 import pureconfig.loadConfig
 
-
 object Main extends App {
 
   loadConfig[AppConfig].fold(
@@ -48,11 +47,14 @@ object Main extends App {
         from_json(toUtfString($"value"), tweetSchema).as("tweet"),
         split(toUtfString($"key"), ":").as("key")
       )
-      .withColumn("tag", $"key"(1))
+      .withColumn("tag", $"key" (1))
       .withColumn("date", from_unixtime(toSeconds($"tweet.created_at"), "YYYY-MM-dd"))
-      .withColumn("hour", hour(from_unixtime(toSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss")))
+      .withColumn("hour",
+                  hour(from_unixtime(toSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss")))
       .groupBy(
-        "tag", "date", "hour"
+        "tag",
+        "date",
+        "hour"
       )
       .count()
       .write

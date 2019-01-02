@@ -5,18 +5,25 @@ import org.apache.spark.sql.types._
 package object job {
 
   final case class AppConfig(kafka: KafkaConfig, output: OutputConfig)
-  final case class KafkaConfig(bootstrapServers: String, topic: String, startingOffsets: String = "earliest", endingOffsets: String = "latest", checkpointLocation: String)
+  final case class KafkaConfig(bootstrapServers: String,
+                               topic: String,
+                               startingOffsets: String = "earliest",
+                               endingOffsets: String = "latest",
+                               checkpointLocation: String)
   final case class OutputConfig(kafkaDataHdfsPath: String, hashtagCountsPath: String)
 
   val tweetSchema = new StructType(
     Array(
-      StructField("contributors", ArrayType(
-        new StructType(Array(
-          StructField("id", LongType),
-          StructField("id_str", StringType),
-          StructField("screen_name", StringType)
-        ))
-      )),
+      StructField("contributors",
+                  ArrayType(
+                    new StructType(
+                      Array(
+                        StructField("id", LongType),
+                        StructField("id_str", StringType),
+                        StructField("screen_name", StringType)
+                      )
+                    )
+                  )),
       StructField("coordinates", new StructType()),
       StructField("created_at", LongType),
       StructField("current_user_retweet", new StructType()),

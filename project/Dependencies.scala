@@ -33,10 +33,10 @@ object Dependencies {
   )
 
   lazy val mainJ = Seq(
-    "com.github.pureconfig"                 %% "pureconfig"                 % versions.pureconfig,
-    "org.apache.spark"                      %% "spark-sql-kafka-0-10"       % versions.spark excludeAll(excludeJpountz),
-    "org.apache.spark"                      %% "spark-core"                 % versions.spark % Provided,
-    "org.apache.spark"                      %% "spark-sql"                  % versions.spark % Provided
+    "com.github.pureconfig" %% "pureconfig"           % versions.pureconfig,
+    "org.apache.spark"      %% "spark-sql-kafka-0-10" % versions.spark excludeAll (excludeJpountz),
+    "org.apache.spark"      %% "spark-core"           % versions.spark % Provided,
+    "org.apache.spark"      %% "spark-sql"            % versions.spark % Provided
   )
 
   lazy val testCommon = Seq(
@@ -59,10 +59,10 @@ object Dependencies {
     )).map(_ % Test)
 
   lazy val itTestsJ = (testCommon ++ Seq(
-    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % versions.jsoniter,
-    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % versions.jsoniter,
-    "com.danielasfregola" %% "twitter4s"             % versions.twitter4s,
-    "net.manub"         %% "scalatest-embedded-kafka" % versions.embeddedKafka,
-    "com.typesafe.akka" %% "akka-stream-testkit" % versions.akka
+    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"      % versions.jsoniter,
+    "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros"    % versions.jsoniter,
+    "com.danielasfregola"                   %% "twitter4s"                % versions.twitter4s,
+    "net.manub"                             %% "scalatest-embedded-kafka" % versions.embeddedKafka,
+    "com.typesafe.akka"                     %% "akka-stream-testkit"      % versions.akka
   )).map(_ % IntegrationTest)
 }

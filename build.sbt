@@ -16,5 +16,7 @@ lazy val job = (project in file("job"))
   .settings(libraryDependencies ++= Dependencies.mainJ)
   .settings(libraryDependencies ++= Dependencies.unitTestsJ)
   .settings(libraryDependencies ++= Dependencies.itTestsJ)
-  .settings(assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false))
+  .settings(
+    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+  )
   .dependsOn(tweetPublisher % IntegrationTest)

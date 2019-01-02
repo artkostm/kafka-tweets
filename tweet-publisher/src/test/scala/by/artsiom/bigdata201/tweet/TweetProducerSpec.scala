@@ -36,14 +36,14 @@ class TweetProducerSpec
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
 
   val configuration = TweetsConfig(Topic, Tracks, Location, BufSize)
-  val tweet  = TweetGenerator.rendomTweet(HashTag)
+  val tweet         = TweetGenerator.rendomTweet(HashTag)
 
   "TweetProducer" should "publish one kafka message with correct key" in {
     val client = createClientMock(tweet)
 
     val tweetProducer = new TweetProducer with HashTagExtractor {
       override protected val twitterClient: StreamingClients = client
-      override protected val config: TweetsConfig = configuration
+      override protected val config: TweetsConfig            = configuration
     }
 
     val probe = TestProbe()
