@@ -42,7 +42,7 @@ class JobIntegTest
     val tmpDir2 = FileUtils.getTempDirectoryPath + File.separator + TempDirectoryPrefix + UUID
       .randomUUID()
       .toString
-    try test((tmpDir1, tmpDir2))
+    try test(tmpDir1, tmpDir2)
     finally {
       FileUtils.deleteQuietly(new File(tmpDir1))
       FileUtils.deleteQuietly(new File(tmpDir2))
