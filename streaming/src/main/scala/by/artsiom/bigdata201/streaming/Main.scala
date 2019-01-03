@@ -22,7 +22,6 @@ object Main extends App {
           .option("kafka.bootstrap.servers", source.bootstrapServers)
           .option("subscribe", source.topic)
           .option("startingOffsets", source.startingOffsets)
-          .option("checkpointLocation", source.checkpointLocation)
           .load()
 
         import spark.implicits._
@@ -33,7 +32,7 @@ object Main extends App {
             split(ToUtfString($"key"), ":").as("key")
           )
           .withColumn("tag", $"key" (1))
-          .withColumn("date", from_unixtime(ToSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss"))
+          .withColumn("date", to_timestamp(from_unixtime(ToSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss")))
           .withWatermark("date", streaming.watermarkDelayThreshold)
           .groupBy(
             window($"date", streaming.windowDuration),
@@ -48,7 +47,7 @@ object Main extends App {
           .option("checkpointLocation", sink.checkpointLocation)
           .queryName("hashtag counts")
           .outputMode(OutputMode.Update())
-          .trigger(Trigger.Continuous(streaming.triggerInterval))
+          .trigger(Trigger.ProcessingTime(streaming.triggerInterval))
           .start()
 
 
