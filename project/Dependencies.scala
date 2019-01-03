@@ -23,9 +23,9 @@ object Dependencies {
   lazy val excludeJpountz = ExclusionRule(organization = "net.jpountz.lz4", name = "lz4")
 
   lazy val spark = Seq(
-    "org.apache.spark" %% "spark-core" % versions.spark % Provided,
-    "org.apache.spark" %% "spark-sql"  % versions.spark % Provided,
-    "org.apache.spark"      %% "spark-sql-kafka-0-10" % versions.spark excludeAll (excludeJpountz),
+    "org.apache.spark" %% "spark-core"           % versions.spark % Provided,
+    "org.apache.spark" %% "spark-sql"            % versions.spark % Provided,
+    "org.apache.spark" %% "spark-sql-kafka-0-10" % versions.spark excludeAll (excludeJpountz),
   )
 
   lazy val mainPublisher = Seq(
@@ -39,17 +39,17 @@ object Dependencies {
   )
 
   lazy val mainBatching = spark ++ Seq(
-    "com.github.pureconfig" %% "pureconfig"           % versions.pureconfig,
-    "org.apache.spark"      %% "spark-core"           % versions.spark % Provided,
-    "org.apache.spark"      %% "spark-sql"            % versions.spark % Provided
+    "com.github.pureconfig" %% "pureconfig" % versions.pureconfig,
+    "org.apache.spark"      %% "spark-core" % versions.spark % Provided,
+    "org.apache.spark"      %% "spark-sql"  % versions.spark % Provided
   )
 
   lazy val mainStreaming = spark ++ Seq(
-    "org.apache.spark" %% "spark-streaming" % versions.spark % Provided,
-    "com.github.pureconfig" %% "pureconfig"           % versions.pureconfig,
-    "org.apache.spark"      %% "spark-core"           % versions.spark % Provided,
-    "org.apache.spark"      %% "spark-sql"            % versions.spark % Provided, 
-    "org.apache.spark" %% "spark-streaming-kafka-0-10" % versions.spark
+    "org.apache.spark"      %% "spark-streaming"            % versions.spark % Provided,
+    "com.github.pureconfig" %% "pureconfig"                 % versions.pureconfig,
+    "org.apache.spark"      %% "spark-core"                 % versions.spark % Provided,
+    "org.apache.spark"      %% "spark-sql"                  % versions.spark % Provided,
+    "org.apache.spark"      %% "spark-streaming-kafka-0-10" % versions.spark
   )
 
   private lazy val testCommon = Seq(
@@ -69,7 +69,7 @@ object Dependencies {
   )).map(_ % IntegrationTest)
 
   lazy val unitTestsBatching = (testCommon ++ Seq(
-  )).map(_ % Test)
+    )).map(_ % Test)
 
   lazy val itTestsBatching = (testCommon ++ Seq(
     "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"      % versions.jsoniter,
@@ -80,9 +80,9 @@ object Dependencies {
   )).map(_ % IntegrationTest)
 
   lazy val itTestsStreaming = itTestsBatching
-  
+
   lazy val common = Seq(
     "org.apache.spark" %% "spark-catalyst" % versions.spark % Provided,
-    "org.apache.spark"      %% "spark-sql"            % versions.spark % Provided intransitive()
+    "org.apache.spark" %% "spark-sql"      % versions.spark % Provided intransitive ()
   )
 }

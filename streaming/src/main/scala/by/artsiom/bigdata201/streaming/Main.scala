@@ -32,7 +32,10 @@ object Main extends App {
             split(ToUtfString($"key"), ":").as("key")
           )
           .withColumn("tag", $"key" (1))
-          .withColumn("date", to_timestamp(from_unixtime(ToSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss")))
+          .withColumn(
+            "date",
+            to_timestamp(from_unixtime(ToSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss"))
+          )
           .withWatermark("date", streaming.watermarkDelayThreshold)
           .groupBy(
             window($"date", streaming.windowDuration),
@@ -49,7 +52,6 @@ object Main extends App {
           .outputMode(OutputMode.Update())
           .trigger(Trigger.ProcessingTime(streaming.triggerInterval))
           .start()
-
 
         spark.streams.awaitAnyTermination()
     }

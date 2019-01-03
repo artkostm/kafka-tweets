@@ -21,17 +21,18 @@ import org.scalatest.FlatSpecLike
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class StreamingIntegTest extends TestKit(ActorSystem("streamint_test"))
-  with FlatSpecLike
-  with EmbeddedKafka {
+class StreamingIntegTest
+    extends TestKit(ActorSystem("streamint_test"))
+    with FlatSpecLike
+    with EmbeddedKafka {
 
   import StreamingIntegTest._
 
-  implicit val mat             = ActorMaterializer()
-  implicit val kafkaSerializer = new ByteArraySerializer()
-  implicit val kafkaDeserializer = new StringDeserializer()
+  implicit val mat                 = ActorMaterializer()
+  implicit val kafkaSerializer     = new ByteArraySerializer()
+  implicit val kafkaDeserializer   = new StringDeserializer()
   implicit val tweetJsonValueCodec = JsonCodecMaker.make[Tweet](CodecMakerConfig())
-  implicit val dispatcher = system.dispatcher
+  implicit val dispatcher          = system.dispatcher
 
   val kafkaConfig = EmbeddedKafkaConfig()
 
@@ -45,38 +46,45 @@ class StreamingIntegTest extends TestKit(ActorSystem("streamint_test"))
     }
   }
 
-  it should "successfully stream hashtag counts to Kafka" in withConfig(kafkaConfig) { checkpointLocation =>
-    withRunningKafkaOnFoundPort(kafkaConfig) { implicit kafkaConfigWithPorts =>
-      val messagesPublished = Source(List(TweetGenerator.rendomTweet(Hashtag)))
-        .runWith(
-          Sink.foreach(
-            tweet =>
-              publishToKafka(TopicToRead,
-                (s"${tweet.user.map(_.name).getOrElse()}:$Hashtag").getBytes,
-                writeToArray(tweet))
+  it should "successfully stream hashtag counts to Kafka" in withConfig(kafkaConfig) {
+    checkpointLocation =>
+      withRunningKafkaOnFoundPort(kafkaConfig) { implicit kafkaConfigWithPorts =>
+        val messagesPublished = Source(List(TweetGenerator.rendomTweet(Hashtag)))
+          .runWith(
+            Sink.foreach(
+              tweet =>
+                publishToKafka(TopicToRead,
+                               (s"${tweet.user.map(_.name).getOrElse()}:$Hashtag").getBytes,
+                               writeToArray(tweet))
+            )
           )
+
+        assert(Await.result(messagesPublished, 10 seconds) == Done)
+
+        val spark =
+          SparkSession.builder.appName("streaming-integ-test").master("local").getOrCreate()
+        system.scheduler.scheduleOnce(20 seconds) {
+          spark.streams.active.foreach(_.stop())
+        }
+
+        val kafkaConfig = KafkaConfig(s"localhost:${kafkaConfigWithPorts.kafkaPort}",
+                                      TopicToRead,
+                                      "earliest",
+                                      checkpointLocation)
+        val appconfig = AppConfig(kafkaConfig,
+                                  kafkaConfig.copy(topic = TopicToWrite),
+                                  StreamingConfig("2 seconds", "2 seconds", "2 seconds"))
+
+        Main.runJob(
+          appconfig,
+          spark
         )
 
-      assert(Await.result(messagesPublished, 10 seconds) == Done)
+        val (key, value) = consumeFirstKeyedMessageFrom(TopicToWrite)
 
-      val spark = SparkSession.builder.appName("streaming-integ-test").master("local").getOrCreate()
-      system.scheduler.scheduleOnce(20 seconds) {
-        spark.streams.active.foreach(_.stop())
+        assert(value == "1")
+        assert(key == Hashtag)
       }
-
-      val kafkaConfig = KafkaConfig(s"localhost:${kafkaConfigWithPorts.kafkaPort}", TopicToRead, "earliest", checkpointLocation)
-      val appconfig = AppConfig(kafkaConfig, kafkaConfig.copy(topic = TopicToWrite), StreamingConfig("2 seconds", "2 seconds", "2 seconds"))
-
-      Main.runJob(
-        appconfig,
-        spark
-      )
-
-      val (key, value) = consumeFirstKeyedMessageFrom(TopicToWrite)
-
-      assert(value == "1")
-      assert(key == Hashtag)
-    }
   }
 }
 

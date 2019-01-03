@@ -6,5 +6,7 @@ package object streaming {
                                topic: String,
                                startingOffsets: String = "latest",
                                checkpointLocation: String)
-  final case class StreamingConfig(windowDuration: String, triggerInterval: String, watermarkDelayThreshold: String)
+  final case class StreamingConfig(windowDuration: String,
+                                   triggerInterval: String,
+                                   watermarkDelayThreshold: String)
 }

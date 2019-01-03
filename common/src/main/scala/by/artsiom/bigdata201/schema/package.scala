@@ -15,15 +15,15 @@ package object schema {
   val TweetSchema = new StructType(
     Array(
       StructField("contributors",
-        ArrayType(
-          new StructType(
-            Array(
-              StructField("id", LongType),
-              StructField("id_str", StringType),
-              StructField("screen_name", StringType)
-            )
-          )
-        )),
+                  ArrayType(
+                    new StructType(
+                      Array(
+                        StructField("id", LongType),
+                        StructField("id_str", StringType),
+                        StructField("screen_name", StringType)
+                      )
+                    )
+                  )),
       StructField("coordinates", new StructType()),
       StructField("created_at", LongType),
       StructField("current_user_retweet", new StructType()),
