@@ -41,7 +41,7 @@ twitter {
 
 Build the jar: ```sbt assembly```
 
-Run Tweets Producer:
+Run Tweets Producer (Kafka's key is a `username:hastag` pair and value is a Tweet in json format):
 ```bash
 java -jar \
     -Dakka.kafka.producer.kafka-clients.bootstrap.servers=192.168.99.100:9092 \
@@ -64,7 +64,7 @@ java -jar \
 
 # Spark Job
 
-To run the spark job on HDP use this:
+To run the spark job on HDP use this (the job produces hashtags and their counts partitioned by date and hour):
 ```bash
 spark-submit \
     --class by.artsiom.bigdata201.job.Main \
@@ -7290,3 +7290,13 @@ Here are some screenshots of Spark UI, DAG Stages and results in HDFS
 ![Job 1 Stage 1](./screenshots/Job1Stage1.png "Job 1 Stage 1")
 
 ![Job 2 Stages 2 and 3](./screenshots/Job2Stage2-3.png "Job 2 Stages 2 and 3")
+
+Kafka's Topic data:
+![Kafka's Topic data](./screenshots/topicData.png "Kafka's Topic data")
+
+Counts partitioned by date and hour:
+![Сounts](./screenshots/countsDate.png "Сounts")
+
+![Сounts](./screenshots/countsHour.png "Сounts")
+
+![Сounts](./screenshots/counts15.png "Сounts")
