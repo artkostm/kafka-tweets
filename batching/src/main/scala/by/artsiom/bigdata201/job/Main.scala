@@ -1,11 +1,11 @@
 package by.artsiom.bigdata201.job
 
-import java.nio.charset.StandardCharsets
-
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.sql.functions._
 import pureconfig.generic.auto._
 import pureconfig.loadConfig
+
+import by.artsiom.bigdata201.schema._
 
 object Main extends App {
 
@@ -35,22 +35,16 @@ object Main extends App {
 
     import spark.implicits._
 
-    // converts byte array to utf-8 string
-    val toUtfString = udf((payload: Array[Byte]) => new String(payload, StandardCharsets.UTF_8))
-
-    // converts milliseconds to seconds
-    val toSeconds = udf((ms: Long) => (ms / 1000))
-
     // writing hashtag counts to hdfs
     hdfsDF
       .select(
-        from_json(toUtfString($"value"), tweetSchema).as("tweet"),
-        split(toUtfString($"key"), ":").as("key")
+        from_json(ToUtfString($"value"), TweetSchema).as("tweet"),
+        split(ToUtfString($"key"), ":").as("key")
       )
       .withColumn("tag", $"key" (1))
-      .withColumn("date", from_unixtime(toSeconds($"tweet.created_at"), "YYYY-MM-dd"))
+      .withColumn("date", from_unixtime(ToSeconds($"tweet.created_at"), "YYYY-MM-dd"))
       .withColumn("hour",
-                  hour(from_unixtime(toSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss")))
+                  hour(from_unixtime(ToSeconds($"tweet.created_at"), "yyyy-MM-dd HH:mm:ss")))
       .groupBy(
         "tag",
         "date",
