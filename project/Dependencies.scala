@@ -69,7 +69,7 @@ object Dependencies {
   )).map(_ % IntegrationTest)
 
   lazy val unitTestsBatching = (testCommon ++ Seq(
-    )).map(_ % Test)
+  )).map(_ % Test)
 
   lazy val itTestsBatching = (testCommon ++ Seq(
     "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"      % versions.jsoniter,
@@ -78,6 +78,8 @@ object Dependencies {
     "net.manub"                             %% "scalatest-embedded-kafka" % versions.embeddedKafka,
     "com.typesafe.akka"                     %% "akka-stream-testkit"      % versions.akka
   )).map(_ % IntegrationTest)
+
+  lazy val itTestsStreaming = itTestsBatching
   
   lazy val common = Seq(
     "org.apache.spark" %% "spark-catalyst" % versions.spark % Provided,
