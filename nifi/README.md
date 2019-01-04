@@ -1,6 +1,6 @@
-# Apache NiFi Task #1
+# Apache NiFi Sample
 
-### Steps to create the pipeline:
+### Steps to create a workflow (http request body -> json {"msg":<request body content>, "ts":"timestamp"} -> batch to file every 60 seconds):
 
 1. Run docker container ```docker run --rm -p 8080:8080 -p 4040:4040 apache/nifi:1.8.0``` (4040 - a port to use with ListenHttp processor)
 
@@ -36,9 +36,7 @@
 
 ![props](./img/all.png "props")
 
-### Task
-
-Run the pipeline created and post 3 messages with an interval 30 seconds using curl:
+10. Run the pipeline created and post 3 messages with an interval 30 seconds using curl:
 
 ```curl -d "hello world" -X POST http://docker_host:4040/data```
 
@@ -57,6 +55,6 @@ nifi@90522e3697bd:/tmp/homework$
 
 ![props](./img/running-pipeline.png "props")
 
-To save the pipeline in a file, create a template, name it as `Big Data Homework` and press the `Download` button:
+11. To save the pipeline in a file, create a template, name it as `Big Data Homework` and press the `Download` button:
 
 ![props](./img/templates.png "props")
